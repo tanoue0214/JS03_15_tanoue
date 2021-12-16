@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINE風アプリ！</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    
+</head>
+<body>
+    <div class="snow-container">
+    <main class="wrapper">
+    
+
+    <h1 class="title">LINE</h1>
+    <div>
+        <div><input type="text" class="inputbox" id="username" placeholder="メールアドレス"></div>
+        <div>
+            <input type="text" class="inputbox" id="password" placeholder="パスワード">   
+        </div>
+        <button id="send" class="login">ログイン</button>
+        <!-- 情報を表示する部分。受信テストの為、非表示にしておく -->
+        <div id="output" style="overflow: auto; height: 500px; display: none;"></div> 
+        
+    </div>
+    </main>
+    </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+    <!-- firebaseを入れる！！ -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved } 
+        from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCB0IKY2sVNq_2WNX71HZZSzPB0lgdj0Gw",
+          authDomain: "chat-test01-a70b8.firebaseapp.com",
+          projectId: "chat-test01-a70b8",
+          storageBucket: "chat-test01-a70b8.appspot.com",
+          messagingSenderId: "55968280260",
+          appId: "1:55968280260:web:c4980144bf372bb4422391"
+        };
+
+
+         // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbRef =ref(db,"chat");
+        
+          // 送信ボタンのクリックアクション
+        $("#send").on("click",function(){
+            const msg={
+                username:$("#username").val(),
+                password :$("#password").val()
+
+            }
+            const newPostRef=push(dbRef);  
+            set(newPostRef,msg);
+            
+            
+
+        });
+
+
+        // データの受信
+        onChildAdded(dbRef,function(data){
+            const msg=data.val();
+            const key=data.key;
+            let h= "<p>";
+                h+=msg.username;
+                h+="<br>";
+                h+=msg.password;
+                h+="</p>";
+                $("#output").append(h);
+
+        });
+
+        $("#send").on("click", function() {
+        location.href= "line.html";
+         });
+
+
+
+
+
+
+    // 背景を雪にする
+
+    window.addEventListener('DOMContentLoaded', ()=> {
+    // ①雪を発生させるコンテナを指定
+    const container = document.querySelector('.snow-container');
+  
+    // ②雪を生成する関数
+    const createSnow = () => {
+      const snowEl = document.createElement('span');
+      snowEl.className = 'snow';
+      const minSize = 5;
+      const maxSize = 10;
+      const size = Math.random() * (maxSize - minSize) + minSize;
+      snowEl.style.width = `${size}px`;
+      snowEl.style.height = `${size}px`;
+      snowEl.style.left = Math.random() * 100 + '%';
+      container.appendChild(snowEl);
+  
+      // 一定時間が経てば雪を消す
+      setTimeout(() => {
+        snowEl.remove();
+      }, 10000);
+    }
+  
+    // ③雪を生成する関数を一定間隔で呼び出す
+    setInterval(createSnow, 100);
+    });
+
+
+        </script>
+
+
+</body>
+</html>
